@@ -6,7 +6,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(modid = MiddleKeyPing.MOD_ID)
+@SuppressWarnings("removal")
+@EventBusSubscriber(modid = MiddleKeyPing.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModNetworks {
     @SubscribeEvent
     public static void init(RegisterPayloadHandlersEvent event) {
