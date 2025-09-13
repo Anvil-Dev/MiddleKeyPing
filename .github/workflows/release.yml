@@ -80,11 +80,11 @@ jobs:
           fail-mode: skip
           changelog: ${{ github.event.release.body }}
 
-          modrinth-id: Bl87I32T
+          modrinth-id: X3RVoddI
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-featured: true
 
-          curseforge-id: 1343127
+          curseforge-id: 1346145
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
