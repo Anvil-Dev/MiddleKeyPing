@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -106,21 +105,25 @@ public record Ping(Vec3 position, PingType pingType, long endTime) {
             key = 3;
         }
         if (key < 0) return;
-        Entity entity = client.getCameraEntity();
-        if (entity == null) return;
-        HitResult pick = HitUtil.pick(entity, 200.0d);
-        if (key == 0 && pick.getType() == HitResult.Type.ENTITY && pick instanceof EntityHitResult entityHitResult) {
-            Entity entity1 = entityHitResult.getEntity();
-            if (entity1.getType().getCategory() == MobCategory.MONSTER) {
-                Ping.sendEnemy(entity1.getEyePosition().add(0.0, 0.3d, 0.0));
+        Entity camera = client.getCameraEntity();
+        if (camera == null) return;
+        HitResult pick = HitUtil.pick(camera, 200.0d);
+        Vec3 location = pick.getLocation();
+        if (pick.getType() == HitResult.Type.ENTITY && pick instanceof EntityHitResult entityHitResult) {
+            Entity entity = entityHitResult.getEntity();
+            location = entity.getEyePosition().add(0.0, 0.3d, 0.0);
+            if (key == 0 && !entity.getType().getCategory().isFriendly()) {
+                Ping.sendEnemy(location);
                 return;
             }
+        } else {
+            location = location.add(camera.getEyePosition().subtract(location).normalize().scale(0.025d));
         }
         switch (key) {
-            case 0 -> Ping.sendGenric(pick.getLocation());
-            case 1 -> Ping.sendWarning(pick.getLocation());
-            case 2 -> Ping.sendGoto(pick.getLocation());
-            case 3 -> Ping.sendEnemy(pick.getLocation());
+            case 0 -> Ping.sendGenric(location);
+            case 1 -> Ping.sendWarning(location);
+            case 2 -> Ping.sendGoto(location);
+            case 3 -> Ping.sendEnemy(location);
         }
     }
 }
