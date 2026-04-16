@@ -46,7 +46,7 @@ jar {
 }
 
 base {
-    archivesName = mod_id + "-neoforge-1.21.3"
+    archivesName = mod_id + "-neoforge-1.21.4"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -77,7 +77,7 @@ neoForge {
         }
 
         data {
-            data()
+            clientData()
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
@@ -101,10 +101,10 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-1.21.3:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-1.21.3:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-1.21.3:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-wheel-neoforge-1.21.3:latest.release"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-1.21.4:latest.release"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-1.21.4:latest.release"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-1.21.4:latest.release"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-wheel-neoforge-1.21.4:latest.release"))
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

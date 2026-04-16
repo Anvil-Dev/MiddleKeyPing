@@ -10,9 +10,9 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 @EventBusSubscriber(modid = MiddleKeyPing.MOD_ID)
 public class MiddleKeyPingDatagen {
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
-        generator.addProvider(event.includeServer(), new MiddleKeyPingLanguageProvider(packOutput));
+        generator.addProvider(true, new MiddleKeyPingLanguageProvider(packOutput));
     }
 }
