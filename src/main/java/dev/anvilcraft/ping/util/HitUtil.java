@@ -52,7 +52,8 @@ public class HitUtil {
         Vec3 vec3 = hitResult.getLocation();
         if (!vec3.closerThan(pos, blockInteractionRange)) {
             if (!allowEmpty) return null;
-            Direction direction = Direction.getNearest(vec3.x() - pos.x(), vec3.y() - pos.y(), vec3.z() - pos.z());
+            BlockPos containing = BlockPos.containing(new Vec3(vec3.x() - pos.x(), vec3.y() - pos.y(), vec3.z() - pos.z()));
+            Direction direction = Direction.getNearest(containing, Direction.UP);
             return BlockHitResult.miss(vec3, direction, BlockPos.containing(vec3));
         } else {
             return hitResult;

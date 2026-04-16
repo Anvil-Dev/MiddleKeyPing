@@ -209,18 +209,18 @@ public class PingPointRenderer {
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(x, -25, 0);
-        client.font.drawInBatch(
+        guiGraphics.drawSpecial(source -> client.font.drawInBatch(
             distanceComponent,
             (float) 0,
             (float) 0,
             ping.pingType.textColor(),
             false,
             poseStack.last().pose(),
-            guiGraphics.bufferSource(),
+            source,
             Font.DisplayMode.NORMAL,
             ping.pingType.color() & 0x66FFFFFF,
             LightTexture.FULL_BRIGHT
-        );
+        ));
         guiGraphics.flush();
         poseStack.popPose();
     }
