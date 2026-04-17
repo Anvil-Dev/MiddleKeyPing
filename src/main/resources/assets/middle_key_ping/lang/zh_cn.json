@@ -18,6 +18,7 @@
   "middle_key_ping.configuration.generic_text_color": "通用标点文字颜色",
   "middle_key_ping.configuration.goto_color": "前往标点颜色",
   "middle_key_ping.configuration.goto_text_color": "前往标点文字颜色",
+  "middle_key_ping.configuration.max_ping_count": "最大标点数量",
   "middle_key_ping.configuration.max_ping_distance": "最大标点距离",
   "middle_key_ping.configuration.max_ping_distance.tooltip": "允许创建标点的最大距离",
   "middle_key_ping.configuration.section.middle_key_ping.client.toml": "中键标点 客户端配置",
