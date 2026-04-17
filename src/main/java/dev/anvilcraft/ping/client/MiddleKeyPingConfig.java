@@ -25,4 +25,7 @@ public class MiddleKeyPingConfig {
     @Comment("The maximum distance allowed for the creation of punctuation marks")
     @BoundedDiscrete(min = 16, max = 1024)
     public int maxPingDistance = 200;
+
+    @BoundedDiscrete(min = 1, max = 64)
+    public int maxPingCount = 6;
 }
