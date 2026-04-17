@@ -1,7 +1,7 @@
 package dev.anvilcraft.ping;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -15,7 +15,7 @@ public class MiddleKeyPing {
     public MiddleKeyPing(IEventBus modEventBus, ModContainer modContainer) {
     }
 
-    public static ResourceLocation of(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MiddleKeyPing.MOD_ID, path);
+    public static Identifier of(String path) {
+        return Identifier.fromNamespaceAndPath(MiddleKeyPing.MOD_ID, path);
     }
 }

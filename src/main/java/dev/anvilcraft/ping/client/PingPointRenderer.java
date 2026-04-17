@@ -80,7 +80,7 @@ public class PingPointRenderer {
         }
 
         Camera camera = client.gameRenderer.getMainCamera();
-        Vec3 cameraPosition = camera.getPosition();
+        Vec3 cameraPosition = camera.position();
         TickRateManager tickRateManager = client.level.tickRateManager();
         PROJECTED_PINGS.clear();
 
@@ -224,6 +224,7 @@ public class PingPointRenderer {
             ping.pingType.textColor(),
             0, // backgroundColor貌似不生效
             false,
+            true,
             null
         ));
         poseStack.popMatrix();
