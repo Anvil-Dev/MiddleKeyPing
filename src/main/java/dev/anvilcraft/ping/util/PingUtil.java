@@ -97,6 +97,7 @@ public class PingUtil {
             holdUniformPingKeyWasDown = true;
         }
         MiddleKeyPingClient.PINGS.removeIf(ping -> ping == null || ping.endTime() < gameTime);
+        if(PingUtil.hasScreen()) return;
         PingType key = null;
         if (GENERIC_PING_KEY.consumeClick()) {
             key = PingType.GENERIC;
@@ -131,12 +132,6 @@ public class PingUtil {
 
     private static void processPress(Minecraft client, int action) {
         if (client.level == null) return;
-        if (action == GLFW.GLFW_PRESS) {
-            if (!holdUniformPingKeyWasDown) {
-                holdUniformPingKeyTime = client.level.getGameTime();
-            }
-            return;
-        }
         if (action == GLFW.GLFW_RELEASE) {
             if (holdUniformPingKeyWasDown) {
                 CONTROLLER.onHoldKeyReleased();
@@ -145,7 +140,18 @@ public class PingUtil {
             }
             holdUniformPingKeyWasDown = false;
             holdUniformPingKeyTime = -1L;
+            return;
         }
+        if(PingUtil.hasScreen()) return;
+        if (action == GLFW.GLFW_PRESS) {
+            if (!holdUniformPingKeyWasDown) {
+                holdUniformPingKeyTime = client.level.getGameTime();
+            }
+        }
+    }
+
+    private static boolean hasScreen() {
+        return Minecraft.getInstance().screen != null;
     }
 
     public static void sendPing(PingType key) {
