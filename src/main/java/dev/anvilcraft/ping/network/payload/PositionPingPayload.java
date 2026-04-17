@@ -11,8 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -44,10 +42,8 @@ public record PositionPingPayload(Component sender, Vec3 position, PingType ping
     @Override
     public void handleOnServer(Player player) {
         final ServerPlayer serverPlayer = (ServerPlayer) player;
-        MinecraftServer server = serverPlayer.getServer();
-        if (server == null) return;
         PacketDistributor.sendToPlayersInDimension(
-            (ServerLevel) player.level(),
+            serverPlayer.level(),
             new PositionPingPayload(player.getName(), this.position(), this.pingType())
         );
     }

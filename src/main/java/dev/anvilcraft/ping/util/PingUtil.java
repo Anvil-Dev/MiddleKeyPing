@@ -38,43 +38,46 @@ public class PingUtil {
         ClientPacketDistributor.sendToServer(new EntityPingPayload(Component.empty(), entity.getUUID(), pingType));
     }
 
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(MiddleKeyPing.of("middle_key_ping"));
+
     public static final KeyMapping UNIFORM_PING_KEY = new KeyMapping(
         "key.middle_key_ping.uniform",
         InputConstants.Type.MOUSE,
         GLFW.GLFW_MOUSE_BUTTON_MIDDLE,
-        "key.categories.middle_key_ping"
+        PingUtil.CATEGORY
     );
 
     public static final KeyMapping GENERIC_PING_KEY = new KeyMapping(
         "key.middle_key_ping.generic",
         InputConstants.Type.KEYSYM,
         GLFW.GLFW_KEY_KP_0,
-        "key.categories.middle_key_ping"
+        PingUtil.CATEGORY
     );
 
     public static final KeyMapping WARNING_PING_KEY = new KeyMapping(
         "key.middle_key_ping.warning",
         InputConstants.Type.KEYSYM,
         GLFW.GLFW_KEY_KP_1,
-        "key.categories.middle_key_ping"
+        PingUtil.CATEGORY
     );
 
     public static final KeyMapping GOTO_PING_KEY = new KeyMapping(
         "key.middle_key_ping.goto",
         InputConstants.Type.KEYSYM,
         GLFW.GLFW_KEY_KP_2,
-        "key.categories.middle_key_ping"
+        PingUtil.CATEGORY
     );
 
     public static final KeyMapping ENEMY_PING_KEY = new KeyMapping(
         "key.middle_key_ping.enemy",
         InputConstants.Type.KEYSYM,
         GLFW.GLFW_KEY_KP_3,
-        "key.categories.middle_key_ping"
+        PingUtil.CATEGORY
     );
 
     @SubscribeEvent
     public static void registerKeyMapping(RegisterKeyMappingsEvent event) {
+        event.registerCategory(PingUtil.CATEGORY);
         event.register(UNIFORM_PING_KEY);
         event.register(GENERIC_PING_KEY);
         event.register(WARNING_PING_KEY);
@@ -114,7 +117,7 @@ public class PingUtil {
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft client = Minecraft.getInstance();
-        if (client.player == null || !PingUtil.UNIFORM_PING_KEY.matches(event.getKey(), event.getScanCode())) {
+        if (client.player == null || !PingUtil.UNIFORM_PING_KEY.matches(event.getKeyEvent())) {
             return;
         }
         PingUtil.processPress(client, event.getAction());
@@ -123,7 +126,11 @@ public class PingUtil {
     @SubscribeEvent
     public static void onKeyInput(InputEvent.MouseButton.Post event) {
         Minecraft client = Minecraft.getInstance();
-        if (client.player == null || !PingUtil.UNIFORM_PING_KEY.matchesMouse(event.getButton())) {
+        if (
+            client.player == null
+            || PingUtil.UNIFORM_PING_KEY.getKey().getType() != InputConstants.Type.MOUSE
+            || PingUtil.UNIFORM_PING_KEY.getKey().getValue() != event.getButton()
+        ) {
             return;
         }
         PingUtil.processPress(client, event.getAction());

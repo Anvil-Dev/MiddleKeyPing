@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.render.state.GuiTextRenderState;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
@@ -51,11 +52,7 @@ public class PingPointRenderer {
 
     @SubscribeEvent
     public static void onLevelRender(RenderLevelStageEvent.AfterParticles event) {
-        PingPointRenderer.collectProjectedPings(
-            event.getCamera(),
-            event.getPartialTick(),
-            event.getModelViewMatrix()
-        );
+        PingPointRenderer.collectProjectedPings(event.getModelViewMatrix());
     }
 
     @SubscribeEvent
@@ -75,21 +72,19 @@ public class PingPointRenderer {
         }
     }
 
-    private static void collectProjectedPings(
-        Camera camera,
-        DeltaTracker partialTick,
-        Matrix4f modelViewMatrix
-    ) {
+    private static void collectProjectedPings(Matrix4f modelViewMatrix) {
         Minecraft client = Minecraft.getInstance();
         if (client.level == null) {
             PROJECTED_PINGS.clear();
             return;
         }
 
+        Camera camera = client.gameRenderer.getMainCamera();
         Vec3 cameraPosition = camera.getPosition();
         TickRateManager tickRateManager = client.level.tickRateManager();
         PROJECTED_PINGS.clear();
 
+        DeltaTracker partialTick = client.getDeltaTracker();
         Iterator<Ping> iterator = MiddleKeyPingClient.PINGS.iterator();
         while (iterator.hasNext()) {
             Ping ping = iterator.next();
@@ -212,6 +207,14 @@ public class PingPointRenderer {
         Matrix3x2fStack poseStack = guiGraphics.pose();
         poseStack.pushMatrix();
         poseStack.translate(x, -25);
+        guiGraphics.fill(
+            RenderPipelines.DEBUG_QUADS,
+            -1,
+            -1,
+            textWidth,
+            client.font.lineHeight,
+            ping.pingType.color() & 0x66FFFFFF
+        );
         ((GuiGraphicsAccessor) guiGraphics).getGuiRenderState().submitText(new GuiTextRenderState(
             client.font,
             distanceComponent.getVisualOrderText(),
@@ -219,22 +222,10 @@ public class PingPointRenderer {
             0,
             0,
             ping.pingType.textColor(),
-            ping.pingType.color() & 0x66FFFFFF,
+            0, // backgroundColor貌似不生效
             false,
             null
         ));
-//        client.font.drawInBatch(
-//            distanceComponent,
-//            0,
-//            0,
-//            ping.pingType.textColor(),
-//            false,
-//            pose.last().pose(),
-//            client.renderBuffers().bufferSource(),
-//            Font.DisplayMode.NORMAL,
-//            ping.pingType.color() & 0x66FFFFFF,
-//            LightTexture.FULL_BRIGHT
-//        );
         poseStack.popMatrix();
     }
 

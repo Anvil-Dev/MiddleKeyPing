@@ -16,11 +16,11 @@ public record PingIconRenderState(Matrix3x2f pose, int color, ScreenRectangle bo
     }
 
     @Override
-    public void buildVertices(VertexConsumer consumer, float z) {
-        consumer.addVertexWith2DPose(this.pose, 0, 15, z).setColor(this.color);
-        consumer.addVertexWith2DPose(this.pose, 5, 10, z).setColor(this.color);
-        consumer.addVertexWith2DPose(this.pose, 0, 0, z).setColor(this.color);
-        consumer.addVertexWith2DPose(this.pose, -5, 10, z).setColor(this.color);
+    public void buildVertices(VertexConsumer consumer) {
+        consumer.addVertexWith2DPose(this.pose, 0, 15).setColor(this.color);
+        consumer.addVertexWith2DPose(this.pose, 5, 10).setColor(this.color);
+        consumer.addVertexWith2DPose(this.pose, 0, 0).setColor(this.color);
+        consumer.addVertexWith2DPose(this.pose, -5, 10).setColor(this.color);
     }
 
     @Override
