@@ -6,7 +6,7 @@
   "mixins": [
   ],
   "client": [
-    "GameRendererAccessor",
+    "CameraAccessor",
     "GuiGraphicsAccessor"
   ],
   "injectors": {

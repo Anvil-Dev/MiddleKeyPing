@@ -2,17 +2,16 @@ package dev.anvilcraft.ping.client;
 
 import com.mojang.blaze3d.platform.Window;
 import dev.anvilcraft.ping.MiddleKeyPing;
-import dev.anvilcraft.ping.mixin.GameRendererAccessor;
+import dev.anvilcraft.ping.mixin.CameraAccessor;
 import dev.anvilcraft.ping.mixin.GuiGraphicsAccessor;
 import dev.anvilcraft.ping.util.Ping;
 import dev.anvilcraft.ping.util.PingType;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.render.state.GuiTextRenderState;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
@@ -28,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class PingPointRenderer {
     }
 
     @SubscribeEvent
-    public static void onLevelRender(RenderLevelStageEvent.AfterParticles event) {
+    public static void onLevelRender(RenderLevelStageEvent.AfterTranslucentParticles event) {
         PingPointRenderer.collectProjectedPings(event.getModelViewMatrix());
     }
 
@@ -61,7 +61,7 @@ public class PingPointRenderer {
 
         Minecraft client = Minecraft.getInstance();
         if (client.player == null) return;
-        GuiGraphics guiGraphics = event.getGuiGraphics();
+        GuiGraphicsExtractor guiGraphics = event.getGuiGraphics();
         Window window = client.getWindow();
 
         for (ProjectedPing ping : PROJECTED_PINGS) {
@@ -72,7 +72,7 @@ public class PingPointRenderer {
         }
     }
 
-    private static void collectProjectedPings(Matrix4f modelViewMatrix) {
+    private static void collectProjectedPings(Matrix4fc modelViewMatrix) {
         Minecraft client = Minecraft.getInstance();
         if (client.level == null) {
             PROJECTED_PINGS.clear();
@@ -100,7 +100,7 @@ public class PingPointRenderer {
                     ping.pingType(),
                     ItemStack.EMPTY,
                     modelViewMatrix,
-                    PingPointRenderer.getProjectionMatrix(camera, partialTick, client.gameRenderer)
+                    PingPointRenderer.getProjectionMatrix(camera)
                 );
                 if (projected != null) {
                     PROJECTED_PINGS.add(projected);
@@ -128,7 +128,7 @@ public class PingPointRenderer {
                     ping.pingType(),
                     stack,
                     modelViewMatrix,
-                    PingPointRenderer.getProjectionMatrix(camera, partialTick, client.gameRenderer)
+                    PingPointRenderer.getProjectionMatrix(camera)
                 );
                 if (projected != null) {
                     PROJECTED_PINGS.add(projected);
@@ -137,12 +137,9 @@ public class PingPointRenderer {
         }
     }
 
-    private static Matrix4f getProjectionMatrix(Camera camera, DeltaTracker partialTick, GameRenderer gameRenderer) {
-        return gameRenderer.getProjectionMatrix(((GameRendererAccessor) gameRenderer).invokeGetFov(
-            camera,
-            partialTick.getGameTimeDeltaTicks(),
-            true
-        ));
+    private static Matrix4f getProjectionMatrix(Camera camera) {
+        Matrix4f result = new Matrix4f();
+        return ((CameraAccessor) camera).getProjection().getMatrix(result);
     }
 
     private static @Nullable ProjectedPing projectToScreen(
@@ -150,7 +147,7 @@ public class PingPointRenderer {
         Vec3 worldPosition,
         PingType pingType,
         ItemStack stack,
-        Matrix4f modelViewMatrix,
+        Matrix4fc modelViewMatrix,
         Matrix4f projectionMatrix
     ) {
         Minecraft client = Minecraft.getInstance();
@@ -177,7 +174,7 @@ public class PingPointRenderer {
 
     private static void renderProjectedPing(
         Minecraft client,
-        GuiGraphics guiGraphics,
+        GuiGraphicsExtractor guiGraphics,
         ProjectedPing ping
     ) {
         Matrix3x2fStack pose = guiGraphics.pose();
@@ -186,7 +183,7 @@ public class PingPointRenderer {
         pose.scale(ping.scale, ping.scale);
 
         if (!ping.stack.isEmpty()) {
-            guiGraphics.renderItem(ping.stack, -8, -8);
+            guiGraphics.item(ping.stack, -8, -8);
         } else {
             PingPointRenderer.renderDefaultPingIcon(guiGraphics, ping.pingType.color());
         }
@@ -198,7 +195,7 @@ public class PingPointRenderer {
 
     private static void renderDistanceTag(
         Minecraft client,
-        GuiGraphics guiGraphics,
+        GuiGraphicsExtractor guiGraphics,
         ProjectedPing ping
     ) {
         Component distanceComponent = Component.literal("%,.1f m".formatted(ping.distance));
@@ -215,7 +212,7 @@ public class PingPointRenderer {
             client.font.lineHeight,
             ping.pingType.color() & 0x66FFFFFF
         );
-        ((GuiGraphicsAccessor) guiGraphics).getGuiRenderState().submitText(new GuiTextRenderState(
+        ((GuiGraphicsAccessor) guiGraphics).getGuiRenderState().addText(new GuiTextRenderState(
             client.font,
             distanceComponent.getVisualOrderText(),
             new Matrix3x2f(poseStack),
@@ -230,7 +227,7 @@ public class PingPointRenderer {
         poseStack.popMatrix();
     }
 
-    private static void renderDefaultPingIcon(GuiGraphics graphics, int color) {
+    private static void renderDefaultPingIcon(GuiGraphicsExtractor graphics, int color) {
         Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         pose.scale(1, -1);
