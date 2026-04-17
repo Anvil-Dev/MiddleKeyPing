@@ -6,6 +6,8 @@
   "mixins": [
   ],
   "client": [
+    "GameRendererAccessor",
+    "GuiGraphicsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
