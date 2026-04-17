@@ -1,6 +1,7 @@
 package dev.anvilcraft.ping;
 
 import com.mojang.logging.LogUtils;
+import dev.anvilcraft.ping.util.PingUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -13,6 +14,7 @@ public class MiddleKeyPing {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public MiddleKeyPing(IEventBus modEventBus, ModContainer modContainer) {
+        modEventBus.addListener(PingUtil::registerKeyMapping);
     }
 
     public static ResourceLocation of(String path) {

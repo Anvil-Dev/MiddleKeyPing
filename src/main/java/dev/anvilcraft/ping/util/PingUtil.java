@@ -73,7 +73,6 @@ public class PingUtil {
         "key.categories.middle_key_ping"
     );
 
-    @SubscribeEvent
     public static void registerKeyMapping(RegisterKeyMappingsEvent event) {
         event.register(UNIFORM_PING_KEY);
         event.register(GENERIC_PING_KEY);
