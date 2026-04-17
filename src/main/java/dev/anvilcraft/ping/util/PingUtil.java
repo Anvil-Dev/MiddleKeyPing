@@ -20,7 +20,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 @EventBusSubscriber(modid = MiddleKeyPing.MOD_ID, value = Dist.CLIENT)
@@ -29,13 +29,13 @@ public class PingUtil {
 
     public static void send(Vec3 position, PingType pingType) {
         if (pingType == PingType.UNIFORM) pingType = PingType.GENERIC;
-        PacketDistributor.sendToServer(new PositionPingPayload(Component.empty(), position, pingType));
+        ClientPacketDistributor.sendToServer(new PositionPingPayload(Component.empty(), position, pingType));
     }
 
 
     public static void sendEntity(Entity entity, PingType pingType) {
         if (pingType == PingType.UNIFORM) pingType = PingType.GENERIC;
-        PacketDistributor.sendToServer(new EntityPingPayload(Component.empty(), entity.getUUID(), pingType));
+        ClientPacketDistributor.sendToServer(new EntityPingPayload(Component.empty(), entity.getUUID(), pingType));
     }
 
     public static final KeyMapping UNIFORM_PING_KEY = new KeyMapping(
