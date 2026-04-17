@@ -14,7 +14,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -26,6 +29,7 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 
 @Mod(value = MiddleKeyPing.MOD_ID, dist = Dist.CLIENT)
+@EventBusSubscriber(modid = MiddleKeyPing.MOD_ID, value = Dist.CLIENT)
 public class MiddleKeyPingClient {
     public static final Collection<Ping> PINGS = Collections.synchronizedList(new LinkedList<>());
     private static final Map<UUID, Entity> ENTITY_CACHE = Collections.synchronizedMap(new HashMap<>());
@@ -47,7 +51,7 @@ public class MiddleKeyPingClient {
         final Minecraft client = Minecraft.getInstance();
         if (client.level == null || client.player == null) return;
         long gameTime = client.level.getGameTime();
-        if (PINGS.size() > 5) PINGS.remove(PINGS.stream().findFirst().get());
+        if (PINGS.size() >= MiddleKeyPingClient.CONFIG.getMaxPingCount()) PINGS.stream().findFirst().ifPresent(PINGS::remove);
         MiddleKeyPingClient.PINGS.add(pingFactory.apply(payload, gameTime + 300));
         SoundEvent event = switch (payload.pingType()) {
             case GOTO -> SoundEvents.NOTE_BLOCK_PLING.value();
@@ -85,5 +89,10 @@ public class MiddleKeyPingClient {
             return entity1;
         }
         return null;
+    }
+
+    @SubscribeEvent
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        MiddleKeyPingClient.PINGS.clear();
     }
 }
