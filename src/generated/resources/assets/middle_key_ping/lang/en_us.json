@@ -18,6 +18,7 @@
   "middle_key_ping.configuration.generic_text_color": "Generic Text Color",
   "middle_key_ping.configuration.goto_color": "Goto Color",
   "middle_key_ping.configuration.goto_text_color": "Goto Text Color",
+  "middle_key_ping.configuration.max_ping_count": "Max Ping Count",
   "middle_key_ping.configuration.max_ping_distance": "Max Ping Distance",
   "middle_key_ping.configuration.max_ping_distance.tooltip": "The maximum distance allowed for the creation of punctuation marks",
   "middle_key_ping.configuration.section.middle_key_ping.client.toml": "Middle Key Ping Client Configuration",
