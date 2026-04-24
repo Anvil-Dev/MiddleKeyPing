@@ -2,8 +2,8 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'idea'
-    id 'net.neoforged.moddev' version '2.0.140'
-    id 'io.freefair.lombok' version '9.2.0'
+    alias libs.plugins.lombok
+    alias libs.plugins.modDevGradle
 }
 
 String buildNumber
@@ -24,6 +24,22 @@ group = mod_group_id
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "Ryanhcode Maven"
+        url = "https://maven.ryanhcode.dev/releases"
+    }
+    maven {
+        name = "Bawnorton Maven"
+        url = "https://maven.bawnorton.com/releases"
+    }
+    maven {  // Registrate
+        name = "Ithundxr Maven"
+        url = "https://maven.ithundxr.dev/snapshots"
+    }
+    maven { // Veil
+        name = 'BlameJared Maven'
+        url = 'https://maven.blamejared.com'
+    }
 }
 
 tasks.register('sourcesJar', Jar) {
@@ -96,10 +112,12 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-26.1:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-26.1:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-26.1:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-wheel-neoforge-26.1:latest.release"))
+    implementation(libs.bundles.anvillib)
+    jarJar(libs.bundles.anvillib)
+
+    implementation(libs.bundles.simulated)
+
+    compileOnly libs.jsr305
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
