@@ -13,6 +13,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -34,8 +36,10 @@ public class MiddleKeyPingClient {
     public static final Collection<Ping> PINGS = Collections.synchronizedList(new LinkedList<>());
     private static final Map<UUID, Entity> ENTITY_CACHE = Collections.synchronizedMap(new HashMap<>());
     public static final MiddleKeyPingConfig CONFIG = ConfigManager.register(MiddleKeyPing.MOD_ID, MiddleKeyPingConfig::new);
+    public static BiFunction<Level, Vec3, Vec3> positionConverter = (level, pos) -> pos;
 
     public MiddleKeyPingClient() {
+        MiddleKeyPing.MANAGER.loadAllClientIntegrations();
     }
 
     public static void handle(PositionPingPayload payload) {
