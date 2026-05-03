@@ -4,6 +4,7 @@
   "package": "dev.anvilcraft.ping.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ChunkMapAccessor"
   ],
   "client": [
     "CameraAccessor",

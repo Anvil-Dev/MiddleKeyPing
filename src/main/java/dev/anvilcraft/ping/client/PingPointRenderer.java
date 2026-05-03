@@ -96,7 +96,7 @@ public class PingPointRenderer {
             if (ping.isPosition() && ping.position() != null) {
                 ProjectedPing projected = PingPointRenderer.projectToScreen(
                     cameraPosition,
-                    ping.position(),
+                    MiddleKeyPingClient.positionConverter.apply(client.level, ping.position()),
                     ping.pingType(),
                     ItemStack.EMPTY,
                     modelViewMatrix,

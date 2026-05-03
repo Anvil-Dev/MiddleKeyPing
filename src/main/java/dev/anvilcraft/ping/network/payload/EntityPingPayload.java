@@ -5,6 +5,7 @@ import dev.anvilcraft.lib.v2.network.packet.ISensitiveBiPacket;
 import dev.anvilcraft.ping.MiddleKeyPing;
 import dev.anvilcraft.ping.client.MiddleKeyPingClient;
 import dev.anvilcraft.ping.network.IPingPayload;
+import dev.anvilcraft.ping.network.ModNetworks;
 import dev.anvilcraft.ping.util.PingType;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.UUID;
 
@@ -49,7 +49,8 @@ public record EntityPingPayload(Component sender, UUID uuid, PingType pingType) 
         ServerLevel level = serverPlayer.level();
         Entity entity = level.getEntity(this.uuid());
         if (entity == null || !entity.isAlive()) return;
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(
+        ModNetworks.sendToPlayersTrackingEntityAndSelf(
+            serverPlayer,
             entity,
             new EntityPingPayload(player.getName(), entity.getUUID(), this.pingType())
         );

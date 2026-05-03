@@ -74,6 +74,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(project.java_version)
 neoForge {
     version = libs.versions.neoForge.get()
 
+    accessTransformers.from('src/main/resources/META-INF/accesstransformer.cfg')
+
     runs {
         client {
             client()
@@ -120,6 +122,8 @@ dependencies {
     jarJar(libs.bundles.anvillib)
 
 //    implementation(libs.bundles.simulated)
+
+    implementation(libs.bonded.peaks)
 
     compileOnly libs.jsr305
 }
