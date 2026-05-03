@@ -24,22 +24,22 @@ group = mod_group_id
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        name = "Ryanhcode Maven"
-        url = "https://maven.ryanhcode.dev/releases"
-    }
-    maven {
-        name = "Bawnorton Maven"
-        url = "https://maven.bawnorton.com/releases"
-    }
-    maven {  // Registrate
-        name = "Ithundxr Maven"
-        url = "https://maven.ithundxr.dev/snapshots"
-    }
-    maven { // Veil
-        name = 'BlameJared Maven'
-        url = 'https://maven.blamejared.com'
-    }
+//    maven {
+//        name = "Ryanhcode Maven"
+//        url = "https://maven.ryanhcode.dev/releases"
+//    }
+//    maven {
+//        name = "Bawnorton Maven"
+//        url = "https://maven.bawnorton.com/releases"
+//    }
+//    maven {  // Registrate
+//        name = "Ithundxr Maven"
+//        url = "https://maven.ithundxr.dev/snapshots"
+//    }
+//    maven { // Veil
+//        name = 'BlameJared Maven'
+//        url = 'https://maven.blamejared.com'
+//    }
 }
 
 tasks.register('sourcesJar', Jar) {
@@ -62,13 +62,13 @@ jar {
 }
 
 base {
-    archivesName = mod_id + "-neoforge-26.1.2"
+    archivesName = mod_id + "-neoforge-" + libs.versions.minecraft.get()
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.toolchain.languageVersion = JavaLanguageVersion.of(project.java_version)
 
 neoForge {
-    version = project.neo_version
+    version = libs.versions.neoForge.get()
 
     runs {
         client {
@@ -115,16 +115,16 @@ dependencies {
     implementation(libs.bundles.anvillib)
     jarJar(libs.bundles.anvillib)
 
-    implementation(libs.bundles.simulated)
+//    implementation(libs.bundles.simulated)
 
     compileOnly libs.jsr305
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
-            minecraft_version      : minecraft_version,
+            minecraft_version      : libs.versions.minecraft.get(),
             minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
+            neo_version            : libs.versions.neoForge.get(),
             neo_version_range      : neo_version_range,
             loader_version_range   : loader_version_range,
             mod_id                 : mod_id,
@@ -185,5 +185,5 @@ idea {
 }
 
 lombok {
-    version = "1.18.44"
+    version = libs.versions.lombok.get()
 }
