@@ -24,6 +24,10 @@ group = mod_group_id
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "Cjash Maven"
+        url = "https://server.cjsah.net:1002/maven/"
+    }
 //    maven {
 //        name = "Ryanhcode Maven"
 //        url = "https://maven.ryanhcode.dev/releases"
