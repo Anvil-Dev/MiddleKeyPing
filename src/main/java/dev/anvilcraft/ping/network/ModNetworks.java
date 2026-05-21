@@ -26,7 +26,7 @@ public class ModNetworks {
 
     @SubscribeEvent
     public static void init(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar("1");
+        PayloadRegistrar registrar = event.registrar("1").optional();
         NetworkRegistrar.register(registrar, MiddleKeyPing.MOD_ID);
     }
 
