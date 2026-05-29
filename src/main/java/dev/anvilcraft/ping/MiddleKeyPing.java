@@ -16,6 +16,7 @@ public class MiddleKeyPing {
 
     public MiddleKeyPing(IEventBus modEventBus, ModContainer modContainer) {
         MiddleKeyPing.MANAGER.compileContent();
+        MiddleKeyPing.MANAGER.loadAllIntegrations();
     }
 
     public static Identifier of(String path) {
