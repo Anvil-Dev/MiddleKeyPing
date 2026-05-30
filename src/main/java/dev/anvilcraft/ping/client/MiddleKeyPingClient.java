@@ -19,6 +19,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import javax.annotation.Nullable;
@@ -48,6 +50,17 @@ public class MiddleKeyPingClient {
 
     public static void handle(EntityPingPayload payload) {
         MiddleKeyPingClient.handle(payload, Ping::new);
+    }
+
+    @SubscribeEvent
+    public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
+        UUID uuid = event.getEntity().getUUID();
+        ENTITY_CACHE.remove(uuid);
+    }
+
+    @SubscribeEvent
+    public static void onEntityLeaveLevel(ClientPlayerNetworkEvent.LoggingOut event) {
+        ENTITY_CACHE.clear();
     }
 
     public static <T extends IPingPayload> void handle(T payload, BiFunction<T, Long, Ping> pingFactory) {
