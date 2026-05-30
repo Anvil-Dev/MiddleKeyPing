@@ -20,7 +20,7 @@ public class MiddleKeyPingLanguageProvider extends LanguageProvider {
         this.add("key.middle_key_ping.warning", "Warning");
         this.add("key.middle_key_ping.goto", "Goto");
         this.add("key.middle_key_ping.enemy", "Enemy");
-        this.add("key.categories.middle_key_ping", "Middle Key Ping");
+        this.add(MiddleKeyPing.of("middle_key_ping").toLanguageKey("key.category"), "Middle Key Ping");
         this.add("chat.middle_key_ping.player", "[%s]");
         this.add("chat.middle_key_ping.generic", "%s Marks a location.");
         this.add("chat.middle_key_ping.warning", "%s Be careful here.");

@@ -4,7 +4,7 @@
   "chat.middle_key_ping.goto": "%s Go here.",
   "chat.middle_key_ping.player": "[%s]",
   "chat.middle_key_ping.warning": "%s Be careful here.",
-  "key.categories.middle_key_ping": "Middle Key Ping",
+  "key.category.middle_key_ping.middle_key_ping": "Middle Key Ping",
   "key.middle_key_ping.enemy": "Enemy",
   "key.middle_key_ping.generic": "Generic",
   "key.middle_key_ping.goto": "Goto",
