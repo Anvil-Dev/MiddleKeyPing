@@ -1,4 +1,4 @@
-package dev.anvilcraft.ping.wheel;
+package dev.anvilcraft.ping.client.wheel;
 
 import dev.anvilcraft.lib.v2.wheel.api.WheelMenuBuilder;
 import dev.anvilcraft.lib.v2.wheel.api.WheelMenuModel;
