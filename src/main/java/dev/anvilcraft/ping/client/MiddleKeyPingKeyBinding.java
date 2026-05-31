@@ -120,17 +120,17 @@ public class MiddleKeyPingKeyBinding {
 
     private static void processPress(Minecraft client, int action) {
         if (client.level == null) return;
-        if (MiddleKeyPingKeyBinding.hasScreen()) return;
         if (action == GLFW.GLFW_RELEASE) {
             if (holdUniformPingKeyWasDown) {
                 CONTROLLER.onHoldKeyReleased();
-            } else {
+            } else if (!MiddleKeyPingKeyBinding.hasScreen()) {
                 PingUtil.sendPing(PingType.UNIFORM);
             }
             holdUniformPingKeyWasDown = false;
             holdUniformPingKeyTime = -1L;
             return;
         }
+        if (MiddleKeyPingKeyBinding.hasScreen()) return;
         if (action == GLFW.GLFW_PRESS) {
             if (!holdUniformPingKeyWasDown) {
                 holdUniformPingKeyTime = client.level.getGameTime();
