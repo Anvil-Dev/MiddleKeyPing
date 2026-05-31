@@ -30,7 +30,8 @@ public class PingUtil {
         HitResult pick = HitUtil.pick(
             camera,
             MiddleKeyPingClient.CONFIG.getMaxPingDistance(),
-            MiddleKeyPingClient.CONFIG.isAllowPingEmpty()
+            MiddleKeyPingClient.CONFIG.isAllowPingEmpty(),
+            MiddleKeyPingClient.CONFIG.isAllowPingPicked()
         );
         if (pick == null) return;
         Vec3 location = pick.getLocation();

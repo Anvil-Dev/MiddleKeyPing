@@ -12,6 +12,8 @@
   "key.middle_key_ping.warning": "警告",
   "middle_key_ping.configuration.allow_ping_empty": "允许标记空点",
   "middle_key_ping.configuration.allow_ping_empty.tooltip": "若设为否，超出指定距离或未选中点位将不会被标记",
+  "middle_key_ping.configuration.allow_ping_picked": "允许标记可选取位置",
+  "middle_key_ping.configuration.allow_ping_picked.tooltip": "若设为否，能选取到方块/实体的点位将不会被标记",
   "middle_key_ping.configuration.enemy_color": "敌人标点颜色",
   "middle_key_ping.configuration.enemy_text_color": "敌人标点文字颜色",
   "middle_key_ping.configuration.generic_color": "通用标点颜色",

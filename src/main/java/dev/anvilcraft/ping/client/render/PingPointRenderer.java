@@ -1,7 +1,8 @@
-package dev.anvilcraft.ping.client;
+package dev.anvilcraft.ping.client.render;
 
 import com.mojang.blaze3d.platform.Window;
 import dev.anvilcraft.ping.MiddleKeyPing;
+import dev.anvilcraft.ping.client.MiddleKeyPingClient;
 import dev.anvilcraft.ping.mixin.CameraAccessor;
 import dev.anvilcraft.ping.mixin.GuiGraphicsAccessor;
 import dev.anvilcraft.ping.util.Ping;

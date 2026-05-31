@@ -1,4 +1,4 @@
-package dev.anvilcraft.ping.client;
+package dev.anvilcraft.ping.client.render;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;

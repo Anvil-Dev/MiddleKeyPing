@@ -1,5 +1,6 @@
 package dev.anvilcraft.ping.util;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -15,9 +16,16 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 
 public class HitUtil {
-    public static @Nullable HitResult pick(Entity entity, double interactionRange, boolean allowEmpty) {
+    public static @Nullable HitResult pick(Entity entity, double interactionRange, boolean allowEmpty, boolean allowPicked) {
         double d1 = Mth.square(interactionRange);
         Vec3 vec3 = entity.getEyePosition(1.0F);
+        if (
+            !allowPicked
+            && Minecraft.getInstance().hitResult != null
+            && Minecraft.getInstance().hitResult.getType() != HitResult.Type.MISS
+        ) {
+            return null;
+        }
         HitResult hitresult = entity.pick(interactionRange, 1.0F, false);
         double d2 = hitresult.getLocation().distanceToSqr(vec3);
         if (hitresult.getType() != HitResult.Type.MISS) {

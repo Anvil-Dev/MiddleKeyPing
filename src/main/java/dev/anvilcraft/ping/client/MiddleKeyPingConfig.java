@@ -22,7 +22,10 @@ public class MiddleKeyPingConfig {
     @Comment("If set to false, points that are beyond the specified distance or are not selected will not be marked")
     public boolean allowPingEmpty = true;
 
-    @Comment("The maximum distance allowed for the creation of punctuation marks")
+    @Comment("Allow mark point when a block/entity can be picked.")
+    public boolean allowPingPicked = true;
+
+    @Comment("The maximum distance allowed for the creation of point marks")
     @BoundedDiscrete(min = 16, max = 1024)
     public int maxPingDistance = 200;
 
