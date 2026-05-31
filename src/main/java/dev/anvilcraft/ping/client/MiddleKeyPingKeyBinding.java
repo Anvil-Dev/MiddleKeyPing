@@ -8,6 +8,7 @@ import dev.anvilcraft.ping.util.PingType;
 import dev.anvilcraft.ping.util.PingUtil;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -30,28 +31,28 @@ public class MiddleKeyPingKeyBinding {
     public static final KeyMapping GENERIC_PING_KEY = new KeyMapping(
         "key.middle_key_ping.generic",
         InputConstants.Type.KEYSYM,
-        GLFW.GLFW_KEY_KP_0,
+        GLFW.GLFW_KEY_UNKNOWN,
         MiddleKeyPingKeyBinding.CATEGORY
     );
 
     public static final KeyMapping WARNING_PING_KEY = new KeyMapping(
         "key.middle_key_ping.warning",
         InputConstants.Type.KEYSYM,
-        GLFW.GLFW_KEY_KP_1,
+        GLFW.GLFW_KEY_UNKNOWN,
         MiddleKeyPingKeyBinding.CATEGORY
     );
 
     public static final KeyMapping GOTO_PING_KEY = new KeyMapping(
         "key.middle_key_ping.goto",
         InputConstants.Type.KEYSYM,
-        GLFW.GLFW_KEY_KP_2,
+        GLFW.GLFW_KEY_UNKNOWN,
         MiddleKeyPingKeyBinding.CATEGORY
     );
 
     public static final KeyMapping ENEMY_PING_KEY = new KeyMapping(
         "key.middle_key_ping.enemy",
         InputConstants.Type.KEYSYM,
-        GLFW.GLFW_KEY_KP_3,
+        GLFW.GLFW_KEY_UNKNOWN,
         MiddleKeyPingKeyBinding.CATEGORY
     );
 
@@ -67,18 +68,34 @@ public class MiddleKeyPingKeyBinding {
 
     private static final WheelScreenController CONTROLLER = new WheelScreenController();
 
-    private static boolean holdUniformPingKeyWasDown = false;
-
     private static long holdUniformPingKeyTime = -1L;
+
+    private static final long HOLD_TIME = 4L;
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft client = Minecraft.getInstance();
         if (client.level == null) return;
         long gameTime = client.level.getGameTime();
-        if (holdUniformPingKeyTime > 0 && gameTime - holdUniformPingKeyTime > 4) {
-            CONTROLLER.onHoldKeyPressed(WheelMenu.PING_WHEEL);
-            holdUniformPingKeyWasDown = true;
+        if (MiddleKeyPingKeyBinding.UNIFORM_PING_KEY.isDown()) {
+            if (
+                MiddleKeyPingKeyBinding.holdUniformPingKeyTime < 0
+                && !MiddleKeyPingKeyBinding.hasScreen()
+            ) {
+                MiddleKeyPingKeyBinding.holdUniformPingKeyTime = client.level.getGameTime();
+            } else if (
+                MiddleKeyPingKeyBinding.holdUniformPingKeyTime > 0
+                && gameTime - MiddleKeyPingKeyBinding.holdUniformPingKeyTime > MiddleKeyPingKeyBinding.HOLD_TIME
+            ) {
+                MiddleKeyPingKeyBinding.CONTROLLER.onHoldKeyPressed(WheelMenu.PING_WHEEL);
+            }
+        } else if (
+            MiddleKeyPingKeyBinding.holdUniformPingKeyTime >= 0
+            && gameTime - MiddleKeyPingKeyBinding.holdUniformPingKeyTime <= MiddleKeyPingKeyBinding.HOLD_TIME
+            && !MiddleKeyPingKeyBinding.hasScreen()
+        ) {
+            PingUtil.sendPing(PingType.UNIFORM);
+            MiddleKeyPingKeyBinding.holdUniformPingKeyTime = -1L;
         }
         MiddleKeyPingClient.PINGS.removeIf(ping -> ping == null || ping.endTime() < gameTime);
         if (MiddleKeyPingKeyBinding.hasScreen()) return;
@@ -99,7 +116,10 @@ public class MiddleKeyPingKeyBinding {
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft client = Minecraft.getInstance();
-        if (client.player == null || !MiddleKeyPingKeyBinding.UNIFORM_PING_KEY.matches(event.getKeyEvent())) {
+        if (
+            client.player == null
+            || !MiddleKeyPingKeyBinding.UNIFORM_PING_KEY.matches(event.getKeyEvent())
+        ) {
             return;
         }
         MiddleKeyPingKeyBinding.processPress(client, event.getAction());
@@ -110,8 +130,7 @@ public class MiddleKeyPingKeyBinding {
         Minecraft client = Minecraft.getInstance();
         if (
             client.player == null
-            || MiddleKeyPingKeyBinding.UNIFORM_PING_KEY.getKey().getType() != InputConstants.Type.MOUSE
-            || MiddleKeyPingKeyBinding.UNIFORM_PING_KEY.getKey().getValue() != event.getButton()
+            || !MiddleKeyPingKeyBinding.UNIFORM_PING_KEY.matchesMouse(new MouseButtonEvent(0, 0, event.getMouseButtonInfo()))
         ) {
             return;
         }
@@ -120,21 +139,8 @@ public class MiddleKeyPingKeyBinding {
 
     private static void processPress(Minecraft client, int action) {
         if (client.level == null) return;
-        if (action == GLFW.GLFW_RELEASE) {
-            if (holdUniformPingKeyWasDown) {
-                CONTROLLER.onHoldKeyReleased();
-            } else if (!MiddleKeyPingKeyBinding.hasScreen()) {
-                PingUtil.sendPing(PingType.UNIFORM);
-            }
-            holdUniformPingKeyWasDown = false;
-            holdUniformPingKeyTime = -1L;
-            return;
-        }
-        if (MiddleKeyPingKeyBinding.hasScreen()) return;
-        if (action == GLFW.GLFW_PRESS) {
-            if (!holdUniformPingKeyWasDown) {
-                holdUniformPingKeyTime = client.level.getGameTime();
-            }
+        if (action == GLFW.GLFW_RELEASE && MiddleKeyPingKeyBinding.holdUniformPingKeyTime >= MiddleKeyPingKeyBinding.HOLD_TIME) {
+            MiddleKeyPingKeyBinding.CONTROLLER.onHoldKeyReleased();
         }
     }
 
