@@ -98,9 +98,19 @@ neoForge {
     }
 }
 
+neoForge {
+    unitTest {
+        enable()
+        testedMod = mods.getByName(project.mod_id)
+    }
+}
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    testImplementation platform("org.junit:junit-bom:5.11.4")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-1.21.7:latest.release"))
     jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-1.21.7:latest.release"))
     jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-1.21.7:latest.release"))
@@ -173,4 +183,8 @@ idea {
 
 lombok {
     version = "1.18.34"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
