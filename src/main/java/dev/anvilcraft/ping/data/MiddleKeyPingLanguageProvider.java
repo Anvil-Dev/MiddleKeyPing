@@ -18,13 +18,13 @@ public class MiddleKeyPingLanguageProvider extends LanguageProvider {
         this.add("key.middle_key_ping.uniform", "Uniform");
         this.add("key.middle_key_ping.generic", "Generic");
         this.add("key.middle_key_ping.warning", "Warning");
-        this.add("key.middle_key_ping.goto", "Goto");
+        this.add("key.middle_key_ping.goto", "Go To");
         this.add("key.middle_key_ping.enemy", "Enemy");
         this.add("key.categories.middle_key_ping", "Middle Key Ping");
         this.add("chat.middle_key_ping.player", "[%s]");
-        this.add("chat.middle_key_ping.generic", "%s Marks a location.");
+        this.add("chat.middle_key_ping.generic", "%s Marked a location.");
         this.add("chat.middle_key_ping.warning", "%s Be careful here.");
         this.add("chat.middle_key_ping.goto", "%s Go here.");
-        this.add("chat.middle_key_ping.enemy", "%s There are enemy here.");
+        this.add("chat.middle_key_ping.enemy", "%s Enemy here.");
     }
 }
