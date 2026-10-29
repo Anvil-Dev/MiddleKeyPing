@@ -7,7 +7,7 @@
     "ChunkMapAccessor"
   ],
   "client": [
-    "CameraAccessor",
+    "GameRendererMixin",
     "GuiGraphicsAccessor"
   ],
   "injectors": {

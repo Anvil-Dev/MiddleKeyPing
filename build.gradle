@@ -115,9 +115,19 @@ neoForge {
     }
 }
 
+neoForge {
+    unitTest {
+        enable()
+        testedMod = mods.getByName(project.mod_id)
+    }
+}
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    testImplementation platform("org.junit:junit-bom:5.11.4")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     implementation(libs.bundles.anvillib)
     jarJar(libs.bundles.anvillib)
 
@@ -194,4 +204,8 @@ idea {
 
 lombok {
     version = libs.versions.lombok.get()
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
