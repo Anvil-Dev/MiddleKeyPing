@@ -65,6 +65,13 @@ ordering = "NONE"
 side = "BOTH"
 # Here's another dependency
 [[dependencies."${mod_id}"]]
+modId = "aleeve_atlas"
+type = "optional"
+versionRange = "[0.0.2,)"
+ordering = "AFTER"
+side = "CLIENT"
+
+[[dependencies."${mod_id}"]]
 modId = "minecraft"
 type = "required"
 # This version range declares a minimum of the current minecraft version up to but not including the next major version

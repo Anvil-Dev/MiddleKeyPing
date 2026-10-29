@@ -31,7 +31,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("DuplicatedCode")
@@ -85,54 +84,35 @@ public class PingPointRenderer {
         PROJECTED_PINGS.clear();
 
         DeltaTracker partialTick = client.getDeltaTracker();
-        Iterator<Ping> iterator = MiddleKeyPingClient.PINGS.iterator();
-        while (iterator.hasNext()) {
-            Ping ping = iterator.next();
-            if (ping == null) {
-                iterator.remove();
+        for (Ping ping : MiddleKeyPingClient.pingsForRendering()) {
+            Vec3 worldPosition = ping.position();
+            ItemStack stack = ItemStack.EMPTY;
+            if (ping.entity() != null) {
+                Entity entity = MiddleKeyPingClient.getEntity(ping.entity());
+                if (entity != null) {
+                    float entityPartialTick = partialTick.getGameTimeDeltaPartialTick(!tickRateManager.isEntityFrozen(entity));
+                    if (entity instanceof ItemEntity itemEntity) {
+                        worldPosition = entity.getPosition(entityPartialTick).add(0, 0.5, 0);
+                        stack = itemEntity.getItem();
+                    } else {
+                        worldPosition = entity.getEyePosition(entityPartialTick).add(0, 0.25, 0);
+                    }
+                }
+            }
+            if (worldPosition == null) {
                 continue;
             }
 
-            if (ping.isPosition() && ping.position() != null) {
-                ProjectedPing projected = PingPointRenderer.projectToScreen(
-                    cameraPosition,
-                    ping.position(),
-                    ping.pingType(),
-                    ItemStack.EMPTY,
-                    modelViewMatrix,
-                    PingPointRenderer.getProjectionMatrix(camera, partialTick, client.gameRenderer)
-                );
-                if (projected != null) {
-                    PROJECTED_PINGS.add(projected);
-                }
-            } else if (ping.isEntity() && ping.entity() != null) {
-                Entity entity = MiddleKeyPingClient.getEntity(ping.entity());
-                if (entity == null) {
-                    iterator.remove();
-                    continue;
-                }
-
-                float entityPartialTick = partialTick.getGameTimeDeltaPartialTick(!tickRateManager.isEntityFrozen(entity));
-                Vec3 worldPosition;
-                ItemStack stack = ItemStack.EMPTY;
-                if (entity instanceof ItemEntity itemEntity) {
-                    worldPosition = entity.getPosition(entityPartialTick).add(0, 0.5, 0);
-                    stack = itemEntity.getItem();
-                } else {
-                    worldPosition = entity.getEyePosition(entityPartialTick).add(0, 0.25, 0);
-                }
-
-                ProjectedPing projected = PingPointRenderer.projectToScreen(
-                    cameraPosition,
-                    worldPosition,
-                    ping.pingType(),
-                    stack,
-                    modelViewMatrix,
-                    PingPointRenderer.getProjectionMatrix(camera, partialTick, client.gameRenderer)
-                );
-                if (projected != null) {
-                    PROJECTED_PINGS.add(projected);
-                }
+            ProjectedPing projected = PingPointRenderer.projectToScreen(
+                cameraPosition,
+                worldPosition,
+                ping.pingType(),
+                stack,
+                modelViewMatrix,
+                PingPointRenderer.getProjectionMatrix(camera, partialTick, client.gameRenderer)
+            );
+            if (projected != null) {
+                PROJECTED_PINGS.add(projected);
             }
         }
     }
@@ -222,7 +202,7 @@ public class PingPointRenderer {
             0,
             0,
             ping.pingType.textColor(),
-            0, // backgroundColor貌似不生效
+            0,
             false,
             true,
             null

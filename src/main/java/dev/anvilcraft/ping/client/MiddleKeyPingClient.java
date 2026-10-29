@@ -1,6 +1,7 @@
 package dev.anvilcraft.ping.client;
 
 import dev.anvilcraft.lib.v2.config.ConfigManager;
+import dev.anvilcraft.lib.v2.integration.IntegrationManager;
 import dev.anvilcraft.ping.MiddleKeyPing;
 import dev.anvilcraft.ping.network.IPingPayload;
 import dev.anvilcraft.ping.network.payload.EntityPingPayload;
@@ -14,9 +15,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import javax.annotation.Nullable;
@@ -24,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -34,8 +38,23 @@ public class MiddleKeyPingClient {
     public static final Collection<Ping> PINGS = Collections.synchronizedList(new LinkedList<>());
     private static final Map<UUID, Entity> ENTITY_CACHE = Collections.synchronizedMap(new HashMap<>());
     public static final MiddleKeyPingConfig CONFIG = ConfigManager.register(MiddleKeyPing.MOD_ID, MiddleKeyPingConfig::new);
+    private static @Nullable PingIntegration integration;
 
-    public MiddleKeyPingClient() {
+    public MiddleKeyPingClient(IEventBus modEventBus) {
+        IntegrationManager integrations = new IntegrationManager(MiddleKeyPing.MOD_ID);
+        integrations.compileContent();
+        integrations.loadAllClientIntegrations();
+        modEventBus.addListener(this::onClientSetup);
+    }
+
+    public static void setIntegration(PingIntegration value) {
+        integration = value;
+    }
+
+    private void onClientSetup(FMLClientSetupEvent event) {
+        if (integration != null) {
+            event.enqueueWork(integration::initialize);
+        }
     }
 
     public static void handle(PositionPingPayload payload) {
@@ -49,10 +68,18 @@ public class MiddleKeyPingClient {
 
     public static <T extends IPingPayload> void handle(T payload, BiFunction<T, Long, Ping> pingFactory) {
         final Minecraft client = Minecraft.getInstance();
-        if (client.level == null || client.player == null) return;
+        if (client.level == null || client.player == null) {
+            return;
+        }
         long gameTime = client.level.getGameTime();
-        if (PINGS.size() >= MiddleKeyPingClient.CONFIG.getMaxPingCount()) PINGS.stream().findFirst().ifPresent(PINGS::remove);
-        MiddleKeyPingClient.PINGS.add(pingFactory.apply(payload, gameTime + 300));
+        if (PINGS.size() >= MiddleKeyPingClient.CONFIG.getMaxPingCount()) {
+            PINGS.stream().findFirst().ifPresent(PINGS::remove);
+        }
+        Ping ping = pingFactory.apply(payload, gameTime + 300);
+        PINGS.add(ping);
+        if (integration != null) {
+            integration.add(ping, payload.sender());
+        }
         SoundEvent event = switch (payload.pingType()) {
             case GOTO -> SoundEvents.NOTE_BLOCK_PLING.value();
             case WARNING -> SoundEvents.NOTE_BLOCK_CHIME.value();
@@ -66,6 +93,17 @@ public class MiddleKeyPingClient {
             )
             .withColor(payload.pingType().color());
         client.getChatListener().handleSystemMessage(tip, false);
+    }
+
+    public static Collection<Ping> pingsForRendering() {
+        return integration != null ? integration.visiblePings() : List.copyOf(PINGS);
+    }
+
+    public static void tick(long gameTime) {
+        PINGS.removeIf(ping -> ping.endTime() < gameTime);
+        if (integration != null) {
+            integration.tick();
+        }
     }
 
     public static @Nullable Entity getEntity(UUID entity) {
@@ -93,6 +131,13 @@ public class MiddleKeyPingClient {
 
     @SubscribeEvent
     public static void onLevelUnload(LevelEvent.Unload event) {
+        if (!event.getLevel().isClientSide()) {
+            return;
+        }
         MiddleKeyPingClient.PINGS.clear();
+        ENTITY_CACHE.clear();
+        if (integration != null) {
+            integration.clear();
+        }
     }
 }

@@ -96,15 +96,30 @@ neoForge {
             sourceSet(sourceSets.main)
         }
     }
+
+    unitTest {
+        enable()
+        testedMod = mods.getByName(project.mod_id)
+    }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-1.21.11:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-1.21.11:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-1.21.11:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-wheel-neoforge-1.21.11:latest.release"))
+    compileOnly("dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.2") { transitive = false }
+    testImplementation("dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.2") { transitive = false }
+    testImplementation platform("org.junit:junit-bom:5.11.4")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-1.21.11:2.0.0+snapshot.+"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-1.21.11:2.0.0+snapshot.+"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-1.21.11:2.0.0+snapshot.+"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-wheel-neoforge-1.21.11:2.0.0+snapshot.+"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-integration-neoforge-1.21.11:2.0.0+snapshot.+"))
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

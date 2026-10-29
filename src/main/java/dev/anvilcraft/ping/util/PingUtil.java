@@ -9,6 +9,7 @@ import dev.anvilcraft.ping.network.payload.PositionPingPayload;
 import dev.anvilcraft.ping.wheel.WheelMenu;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.EntityHitResult;
@@ -23,9 +24,13 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
+
 @EventBusSubscriber(modid = MiddleKeyPing.MOD_ID, value = Dist.CLIENT)
 public class PingUtil {
     private static final WheelScreenController CONTROLLER = new WheelScreenController();
+    private static final PingPress PRESS = new PingPress();
+    private static @Nullable Screen holdScreen;
 
     public static void send(Vec3 position, PingType pingType) {
         if (pingType == PingType.UNIFORM) pingType = PingType.GENERIC;
@@ -86,20 +91,20 @@ public class PingUtil {
     }
 
 
-    private static boolean holdUniformPingKeyWasDown = false;
-
-    private static long holdUniformPingKeyTime = -1L;
-
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft client = Minecraft.getInstance();
-        if (client.level == null) return;
-        long gameTime = client.level.getGameTime();
-        if (holdUniformPingKeyTime > 0 && gameTime - holdUniformPingKeyTime > 4) {
-            CONTROLLER.onHoldKeyPressed(WheelMenu.PING_WHEEL);
-            holdUniformPingKeyWasDown = true;
+        if (client.level == null) {
+            PRESS.cancel();
+            holdScreen = null;
+            return;
         }
-        MiddleKeyPingClient.PINGS.removeIf(ping -> ping == null || ping.endTime() < gameTime);
+        long gameTime = client.level.getGameTime();
+        if (PRESS.openWheel(gameTime, client.screen != null && client.screen != holdScreen)) {
+            CONTROLLER.onHoldKeyPressed(WheelMenu.PING_WHEEL);
+            holdScreen = client.screen;
+        }
+        MiddleKeyPingClient.tick(gameTime);
         if(PingUtil.hasScreen()) return;
         PingType key = null;
         if (GENERIC_PING_KEY.consumeClick()) {
@@ -138,22 +143,21 @@ public class PingUtil {
     }
 
     private static void processPress(Minecraft client, int action) {
-        if (client.level == null) return;
-        if (action == GLFW.GLFW_RELEASE) {
-            if (holdUniformPingKeyWasDown) {
-                CONTROLLER.onHoldKeyReleased();
-            } else {
-                PingUtil.sendPing(PingType.UNIFORM);
-            }
-            holdUniformPingKeyWasDown = false;
-            holdUniformPingKeyTime = -1L;
+        if (client.level == null) {
             return;
         }
-        if(PingUtil.hasScreen()) return;
-        if (action == GLFW.GLFW_PRESS) {
-            if (!holdUniformPingKeyWasDown) {
-                holdUniformPingKeyTime = client.level.getGameTime();
+        if (action == GLFW.GLFW_RELEASE) {
+            switch (PRESS.release(client.screen != null && client.screen != holdScreen)) {
+                case WHEEL -> CONTROLLER.onHoldKeyReleased();
+                case PING -> PingUtil.sendPing(PingType.UNIFORM);
+                case NONE -> {
+                }
             }
+            holdScreen = null;
+            return;
+        }
+        if (!PingUtil.hasScreen() && action == GLFW.GLFW_PRESS) {
+            PRESS.start(client.level.getGameTime());
         }
     }
 
