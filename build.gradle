@@ -23,6 +23,12 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    maven {
+        url = 'https://server.cjsah.net:1002/maven/'
+        content {
+            includeModule('dev.dubhe.map', 'aleeve_atlas-neoforge-1.21.11')
+        }
+    }
     mavenCentral()
 }
 
@@ -106,8 +112,8 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    compileOnly("dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.2") { transitive = false }
-    testImplementation("dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.2") { transitive = false }
+    compileOnly("dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.1+build.+") { transitive = false }
+    testImplementation("dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.1+build.+") { transitive = false }
     testImplementation platform("org.junit:junit-bom:5.11.4")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
