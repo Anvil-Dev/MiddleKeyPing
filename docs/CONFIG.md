@@ -4,7 +4,7 @@
 
 客户端配置由 AnvilLib 保存，可通过模组配置界面修改。`maxPingDistance` 控制世界内拾取距离，范围为 16 至 1024 格；`allowPingEmpty` 控制是否允许标记未命中的位置；`maxPingCount` 控制同时保留的标点数，范围为 1 至 64，默认 6。四类标点的图标和距离文字分别使用 `genericColor`、`warningColor`、`gotoColor`、`enemyColor` 及对应的 `TextColor` 配置，颜色格式为 `#RRGGBBAA`。
 
-同时安装 Aleeve Atlas 0.0.2 或更新版本时，MiddleKeyPing 自动负责世界内和 Atlas 世界地图的中键操作、轮盘内容、世界内渲染与网络发送。地图短按发送一般标点；长按打开与世界内相同的轮盘，选项依次为一般、警告、前往、敌人，目标使用地图鼠标所指的世界坐标与地图缓存高度。松开中键发送选中项并返回地图，按 Esc 或点击鼠标取消轮盘。
+同时安装 Aleeve Atlas 0.0.1 系列构建版或更新版本时，MiddleKeyPing 自动负责世界内和 Atlas 世界地图的中键操作、轮盘内容、世界内渲染与网络发送。地图短按发送一般标点；长按打开与世界内相同的轮盘，选项依次为一般、警告、前往、敌人，目标使用地图鼠标所指的世界坐标与地图缓存高度。松开中键发送选中项并返回地图，按 Esc 或点击鼠标取消轮盘。
 
 MiddleKeyPing 使用内嵌的 AnvilLib Integration 模块加载 Atlas 客户端联动。
 
@@ -14,4 +14,4 @@ MiddleKeyPing 使用内嵌的 AnvilLib Integration 模块加载 Atlas 客户端�
 
 标点默认保留 300 个游戏刻，约 15 秒。实体标点跟随已加载目标；目标尚未加载时等待其出现，卸载后保留最后坐标直到过期。超过 `maxPingCount` 时移除最早标点，并同步移除地图标点；退出世界或切换维度时清理标点。
 
-编译前需先在相邻 `aleeve-atlas` 仓库执行 `./gradlew.bat publishToMavenLocal --console=plain`，再在本仓库执行 `./gradlew.bat build --console=plain`。Atlas 作为可选编译依赖，不会内嵌到 MiddleKeyPing 的构建产物中。
+执行 `./gradlew.bat build --console=plain` 时，从 `https://server.cjsah.net:1002/maven/` 解析 `dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.1+build.+`。Atlas 作为可选编译依赖，不会内嵌到 MiddleKeyPing 的构建产物中。
