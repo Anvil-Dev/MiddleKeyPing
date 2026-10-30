@@ -1,5 +1,6 @@
 package dev.anvilcraft.ping.client;
 
+import com.google.gson.annotations.SerializedName;
 import dev.anvilcraft.lib.v2.config.BoundedDiscrete;
 import dev.anvilcraft.lib.v2.config.Comment;
 import dev.anvilcraft.lib.v2.config.Config;
@@ -14,18 +15,22 @@ public class MiddleKeyPingConfig {
     public String genericTextColor = "#DDDDDDFF";
     public String warningColor = "#FFFF00FF";
     public String warningTextColor = "#0000FFFF";
+    @SerializedName("Go To Color")
     public String gotoColor = "#00FF00FF";
+    @SerializedName("Go To Text Color")
     public String gotoTextColor = "#FF00FFFF";
     public String enemyColor = "#FF0000FF";
     public String enemyTextColor = "#00FFFFFF";
 
-    @Comment("If set to false, points that are beyond the specified distance or are not selected will not be marked")
+    @Comment("If disabled, locations beyond the maximum distance or without a target will not be marked.")
+    @SerializedName("Allow Pinging Empty Space")
     public boolean allowPingEmpty = true;
 
-    @Comment("Allow mark point when a block/entity can be picked.")
+    @Comment("If disabled, locations where a block or entity can be picked will not be marked.")
+    @SerializedName("Allow Pinging Pickable Targets")
     public boolean allowPingPicked = true;
 
-    @Comment("The maximum distance allowed for the creation of point marks")
+    @Comment("The maximum distance allowed for placing pings.")
     @BoundedDiscrete(min = 16, max = 1024)
     public int maxPingDistance = 200;
 

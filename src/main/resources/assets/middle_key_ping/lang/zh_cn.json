@@ -23,9 +23,9 @@
   "middle_key_ping.configuration.max_ping_count": "最大标点数量",
   "middle_key_ping.configuration.max_ping_distance": "最大标点距离",
   "middle_key_ping.configuration.max_ping_distance.tooltip": "允许创建标点的最大距离",
-  "middle_key_ping.configuration.section.middle_key_ping.client.toml": "中键标点 客户端配置",
-  "middle_key_ping.configuration.section.middle_key_ping.client.toml.title": "中键标点 客户端配置",
-  "middle_key_ping.configuration.title": "中键标点 配置",
+  "middle_key_ping.configuration.section.middle_key_ping.client.toml": "中键标点客户端配置",
+  "middle_key_ping.configuration.section.middle_key_ping.client.toml.title": "中键标点客户端配置",
+  "middle_key_ping.configuration.title": "中键标点配置",
   "middle_key_ping.configuration.warning_color": "警告标点颜色",
   "middle_key_ping.configuration.warning_text_color": "警告标点文字颜色"
 }
