@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
-@Integration(value = "aleeve_atlas", version = "[0.0.2,)", type = { IntegrationType.CLIENT })
+@Integration(value = "aleeve_atlas", version = "[0.0.1,)", type = { IntegrationType.CLIENT })
 public final class AtlasPingsImpl implements PingIntegration {
     private static final Map<Ping, MapPingData> LINKS = new IdentityHashMap<>();
 

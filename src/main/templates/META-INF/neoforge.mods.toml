@@ -67,7 +67,7 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "aleeve_atlas"
 type = "optional"
-versionRange = "[0.0.2,)"
+versionRange = "[0.0.1,)"
 ordering = "AFTER"
 side = "CLIENT"
 
