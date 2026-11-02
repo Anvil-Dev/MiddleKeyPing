@@ -9,12 +9,28 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     env:
+      ORG_GRADLE_PROJECT_bondedPeaksDir: ${{ github.workspace }}/.temp/bonded-peaks
+      ORG_GRADLE_PROJECT_aleeveAtlasDir: ${{ github.workspace }}/.temp/aleeve-atlas
       CI_BUILD: false
       PR_BUILD: false
       VERSION_TYPE: ${{ github.event.release.prerelease && 'beta' || 'release' }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
+
+      - name: Checkout Atlas API
+        uses: actions/checkout@v4
+        with:
+          repository: Gu-ZT/aleeve-atlas
+          ref: dev/26.2
+          path: .temp/aleeve-atlas
+
+      - name: Checkout Bonded Peaks API
+        uses: actions/checkout@v4
+        with:
+          repository: Gu-ZT/bonded-peaks
+          ref: dev/26.2
+          path: .temp/bonded-peaks
 
       - name: validate gradle wrapper
         uses: gradle/actions/wrapper-validation@v3

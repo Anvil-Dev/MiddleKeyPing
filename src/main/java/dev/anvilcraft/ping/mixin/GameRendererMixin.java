@@ -34,7 +34,7 @@ public abstract class GameRendererMixin {
         DeltaTracker deltaTracker, float partialTick, float cameraPartialTick, CallbackInfo ci
     ) {
         Minecraft client = Minecraft.getInstance();
-        var state = client.gameRenderer.getGameRenderState();
+        var state = client.gameRenderer.gameRenderState();
         CameraRenderState camera = state.levelRenderState.cameraRenderState;
         Matrix4f projection = new Matrix4f(camera.projectionMatrix);
         PoseStack bob = new PoseStack();
