@@ -1,6 +1,6 @@
 package dev.anvilcraft.ping.client.render;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 import org.joml.Matrix3x2f;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record PingIconRenderState(Matrix3x2f pose, int color, ScreenRectangle bounds) implements GuiElementRenderState {
     public PingIconRenderState(Matrix3x2f pose, int color) {
