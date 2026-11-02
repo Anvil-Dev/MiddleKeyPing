@@ -9,3 +9,20 @@ pluginManagement {
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
+
+
+if (providers.gradleProperty('aleeveAtlasDir').isPresent()) {
+    includeBuild(providers.gradleProperty('aleeveAtlasDir').get()) {
+        dependencySubstitution {
+            substitute module('dev.dubhe.map:aleeve_atlas-neoforge-26.1.2') using project(':')
+        }
+    }
+}
+
+if (providers.gradleProperty('bondedPeaksDir').isPresent()) {
+    includeBuild(providers.gradleProperty('bondedPeaksDir').get()) {
+        dependencySubstitution {
+            substitute module('dev.dubhe.bonded:bonded-peaks-26.1.2') using project(':')
+        }
+    }
+}

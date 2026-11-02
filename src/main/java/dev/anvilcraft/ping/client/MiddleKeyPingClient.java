@@ -2,6 +2,10 @@ package dev.anvilcraft.ping.client;
 
 import dev.anvilcraft.lib.v2.config.ConfigManager;
 import dev.anvilcraft.ping.MiddleKeyPing;
+import dev.anvilcraft.lib.v2.integration.IntegrationManager;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import java.util.List;
 import dev.anvilcraft.ping.network.IPingPayload;
 import dev.anvilcraft.ping.network.payload.EntityPingPayload;
 import dev.anvilcraft.ping.network.payload.PositionPingPayload;
@@ -23,7 +27,7 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +44,34 @@ public class MiddleKeyPingClient {
     public static final MiddleKeyPingConfig CONFIG = ConfigManager.register(MiddleKeyPing.MOD_ID, MiddleKeyPingConfig::new);
     public static BiFunction<Level, Vec3, Vec3> positionConverter = (_, pos) -> pos;
 
-    public MiddleKeyPingClient() {
+    private static @Nullable PingIntegration integration;
+
+    public MiddleKeyPingClient(IEventBus modEventBus) {
+        modEventBus.addListener(this::onClientSetup);
+        IntegrationManager integrations = new IntegrationManager(MiddleKeyPing.MOD_ID);
+        integrations.compileContent();
+        integrations.loadAllClientIntegrations();
+    }
+
+    public static void setIntegration(PingIntegration value) {
+        integration = value;
+    }
+
+    private void onClientSetup(FMLClientSetupEvent event) {
+        if (integration != null) {
+            event.enqueueWork(integration::initialize);
+        }
+    }
+
+    public static Collection<Ping> pingsForRendering() {
+        return integration != null ? integration.visiblePings() : List.copyOf(PINGS);
+    }
+
+    public static void tick(long gameTime) {
+        PINGS.removeIf(ping -> ping.endTime() < gameTime);
+        if (integration != null) {
+            integration.tick();
+        }
     }
 
     public static void handle(PositionPingPayload payload) {
@@ -65,10 +96,18 @@ public class MiddleKeyPingClient {
 
     public static <T extends IPingPayload> void handle(T payload, BiFunction<T, Long, Ping> pingFactory) {
         final Minecraft client = Minecraft.getInstance();
-        if (client.level == null || client.player == null) return;
+        if (client.level == null || client.player == null) {
+            return;
+        }
         long gameTime = client.level.getGameTime();
-        if (PINGS.size() >= MiddleKeyPingClient.CONFIG.getMaxPingCount()) PINGS.stream().findFirst().ifPresent(PINGS::remove);
-        MiddleKeyPingClient.PINGS.add(pingFactory.apply(payload, gameTime + 300));
+        if (PINGS.size() >= MiddleKeyPingClient.CONFIG.getMaxPingCount()) {
+            PINGS.stream().findFirst().ifPresent(PINGS::remove);
+        }
+        Ping ping = pingFactory.apply(payload, gameTime + 300);
+        PINGS.add(ping);
+        if (integration != null) {
+            integration.add(ping, payload.sender());
+        }
         SoundEvent event = switch (payload.pingType()) {
             case GOTO -> SoundEvents.NOTE_BLOCK_PLING.value();
             case WARNING -> SoundEvents.NOTE_BLOCK_CHIME.value();
@@ -100,7 +139,9 @@ public class MiddleKeyPingClient {
         }
         Iterable<Entity> entities = client.level.entitiesForRendering();
         for (Entity entity1 : entities) {
-            if (!entity1.isAlive() || !entity1.getUUID().equals(entity)) continue;
+            if (!entity1.isAlive() || !entity1.getUUID().equals(entity)) {
+                continue;
+            }
             ENTITY_CACHE.put(entity1.getUUID(), entity1);
             return entity1;
         }
@@ -109,6 +150,13 @@ public class MiddleKeyPingClient {
 
     @SubscribeEvent
     public static void onLevelUnload(LevelEvent.Unload event) {
-        MiddleKeyPingClient.PINGS.clear();
+        if (!event.getLevel().isClientSide()) {
+            return;
+        }
+        PINGS.clear();
+        ENTITY_CACHE.clear();
+        if (integration != null) {
+            integration.clear();
+        }
     }
 }
