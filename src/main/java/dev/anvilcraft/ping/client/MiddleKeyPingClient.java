@@ -22,7 +22,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -122,7 +122,9 @@ public class MiddleKeyPingClient {
         }
         Iterable<Entity> entities = client.level.entitiesForRendering();
         for (Entity entity1 : entities) {
-            if (!entity1.isAlive() || !entity1.getUUID().equals(entity)) continue;
+            if (!entity1.isAlive() || !entity1.getUUID().equals(entity)) {
+                continue;
+            }
             ENTITY_CACHE.put(entity1.getUUID(), entity1);
             return entity1;
         }

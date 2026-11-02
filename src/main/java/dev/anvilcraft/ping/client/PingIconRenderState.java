@@ -8,7 +8,7 @@ import net.minecraft.client.gui.render.state.GuiElementRenderState;
 import net.minecraft.client.renderer.RenderPipelines;
 import org.joml.Matrix3x2f;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public record PingIconRenderState(Matrix3x2f pose, int color, ScreenRectangle bounds) implements GuiElementRenderState {
     public PingIconRenderState(Matrix3x2f pose, int color) {

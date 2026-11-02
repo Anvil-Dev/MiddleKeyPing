@@ -5,7 +5,7 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /// 保存本帧世界渲染的最终投影，供客户端渲染线程投影标点。
 public final class PingProjection {

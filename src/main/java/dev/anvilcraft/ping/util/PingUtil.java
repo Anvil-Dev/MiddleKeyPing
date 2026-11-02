@@ -24,7 +24,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(modid = MiddleKeyPing.MOD_ID, value = Dist.CLIENT)
 public class PingUtil {
@@ -33,13 +33,17 @@ public class PingUtil {
     private static @Nullable Screen holdScreen;
 
     public static void send(Vec3 position, PingType pingType) {
-        if (pingType == PingType.UNIFORM) pingType = PingType.GENERIC;
+        if (pingType == PingType.UNIFORM) {
+            pingType = PingType.GENERIC;
+        }
         ClientPacketDistributor.sendToServer(new PositionPingPayload(Component.empty(), position, pingType));
     }
 
 
     public static void sendEntity(Entity entity, PingType pingType) {
-        if (pingType == PingType.UNIFORM) pingType = PingType.GENERIC;
+        if (pingType == PingType.UNIFORM) {
+            pingType = PingType.GENERIC;
+        }
         ClientPacketDistributor.sendToServer(new EntityPingPayload(Component.empty(), entity.getUUID(), pingType));
     }
 
@@ -105,7 +109,9 @@ public class PingUtil {
             holdScreen = client.screen;
         }
         MiddleKeyPingClient.tick(gameTime);
-        if(PingUtil.hasScreen()) return;
+        if (PingUtil.hasScreen()) {
+            return;
+        }
         PingType key = null;
         if (GENERIC_PING_KEY.consumeClick()) {
             key = PingType.GENERIC;
@@ -116,7 +122,9 @@ public class PingUtil {
         } else if (ENEMY_PING_KEY.consumeClick()) {
             key = PingType.ENEMY;
         }
-        if (key == null) return;
+        if (key == null) {
+            return;
+        }
         PingUtil.sendPing(key);
     }
 
@@ -168,13 +176,17 @@ public class PingUtil {
     public static void sendPing(PingType key) {
         Minecraft client = Minecraft.getInstance();
         Entity camera = client.getCameraEntity();
-        if (camera == null) return;
+        if (camera == null) {
+            return;
+        }
         HitResult pick = HitUtil.pick(
             camera,
             MiddleKeyPingClient.CONFIG.getMaxPingDistance(),
             MiddleKeyPingClient.CONFIG.isAllowPingEmpty()
         );
-        if (pick == null) return;
+        if (pick == null) {
+            return;
+        }
         Vec3 location = pick.getLocation();
         if (pick.getType() == HitResult.Type.ENTITY && pick instanceof EntityHitResult entityHitResult) {
             Entity entity = entityHitResult.getEntity();

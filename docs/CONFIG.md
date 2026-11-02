@@ -14,4 +14,9 @@ MiddleKeyPing 使用内嵌的 AnvilLib Integration 模块加载 Atlas 客户端�
 
 标点默认保留 300 个游戏刻（约 15 秒）。实体标点会跟随已加载的目标；若目标尚未加载则等待其出现，目标卸载后将保留其最后坐标直至过期。标点数量超过 `maxPingCount` 时会移除最早的标点，并同步移除对应的地图标点；退出世界或切换维度时会清空所有标点。
 
-执行 `./gradlew.bat build --console=plain` 时，从 `https://server.cjsah.net:1002/maven/` 解析 `dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.1+build.+`。Atlas 仅作为可选编译依赖，不会内嵌到 MiddleKeyPing 的构建产物中。
+执行 `./gradlew.bat build --console=plain` 时，从 `https://server.cjsah.net:1002/maven/releases/` 解析 `dev.dubhe.map:aleeve_atlas-neoforge-1.21.11:0.0.1+build.+`。Atlas 仅作为可选编译依赖，不会内嵌到 MiddleKeyPing 的构建产物中。
+
+
+源码联动验证可通过 `-PaleeveAtlasDir=<Atlas 源码绝对路径>` 直接使用对应的 Atlas `dev/1.21.11` 分支。
+
+英文语言文件由 `runData` 生成；中文在 `src/main/resources/assets/middle_key_ping/lang/zh_cn.json` 手动维护，配置分组翻译键与 NeoForge 按配置文件名生成的键一致。
