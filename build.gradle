@@ -22,6 +22,10 @@ if (envVersion != null && envVersion.startsWith("refs/tags/")) {
 group = mod_group_id
 
 repositories {
+    exclusiveContent {
+        forRepository { maven { url = 'https://server.cjsah.net:1002/maven/releases/' } }
+        filter { includeGroup 'dev.anvilcraft.lib'; includeGroup 'dev.dubhe.map'; includeGroup 'dev.dubhe.bonded' }
+    }
     mavenLocal()
     mavenCentral()
     maven {
@@ -86,11 +90,6 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 neoForge {
     version = project.neo_version
 
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
-    }
-
     runs {
         client {
             client()
@@ -140,6 +139,9 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    compileOnly 'org.jspecify:jspecify:1.0.0'
+    compileOnly("dev.dubhe.map:aleeve_atlas-neoforge-1.21.1:0.0.1+build.+") { transitive = false }
+    testImplementation("dev.dubhe.map:aleeve_atlas-neoforge-1.21.1:0.0.1+build.+") { transitive = false }
     testImplementation platform("org.junit:junit-bom:5.11.4")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
@@ -186,7 +188,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = project.group
-            artifactId = project.archivesBaseName
+            artifactId = base.archivesName.get()
             version = project.version
 
             from components.java
@@ -219,7 +221,7 @@ idea {
 }
 
 lombok {
-    version = "1.18.34"
+    version = "1.18.44"
 }
 
 tasks.named('test') {

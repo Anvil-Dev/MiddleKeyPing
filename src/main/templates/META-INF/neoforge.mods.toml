@@ -77,3 +77,10 @@ side = "BOTH"
 # stop your mod loading on the server for example.
 #[features."${mod_id}"]
 #openGLVersion="[3.2,)"
+
+[[dependencies."${mod_id}"]]
+modId = "aleeve_atlas"
+type = "optional"
+versionRange = "[0.0.1,)"
+ordering = "AFTER"
+side = "BOTH"
