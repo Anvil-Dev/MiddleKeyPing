@@ -2,8 +2,8 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'idea'
-    id 'net.neoforged.moddev' version '2.0.107'
-    id 'io.freefair.lombok' version '8.7.1'
+    id 'net.neoforged.moddev' version '2.0.148'
+    id 'io.freefair.lombok' version '9.2.0'
 }
 
 String buildNumber
@@ -22,6 +22,10 @@ if (envVersion != null && envVersion.startsWith("refs/tags/")) {
 group = mod_group_id
 
 repositories {
+    exclusiveContent {
+        forRepository { maven { url = 'https://server.cjsah.net:1002/maven/releases/' } }
+        filter { includeGroup 'dev.anvilcraft.lib'; includeGroup 'dev.dubhe.map'; includeGroup 'dev.dubhe.bonded' }
+    }
     mavenLocal()
     mavenCentral()
     maven {
@@ -56,11 +60,6 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
     version = project.neo_version
-
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
-    }
 
     runs {
         client {
@@ -111,13 +110,17 @@ neoForge {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-integration-neoforge-1.21.8:2.0.0+snapshot.603"))
+    compileOnly 'org.jspecify:jspecify:1.0.0'
+    compileOnly("dev.dubhe.map:aleeve_atlas-neoforge-1.21.8:0.0.1+build.+") { transitive = false }
+    testImplementation("dev.dubhe.map:aleeve_atlas-neoforge-1.21.8:0.0.1+build.+") { transitive = false }
     testImplementation platform("org.junit:junit-bom:5.11.4")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-1.21.8:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-1.21.8:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-1.21.8:latest.release"))
-    jarJar(implementation("dev.anvilcraft.lib:anvillib-wheel-neoforge-1.21.8:latest.release"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-codec-neoforge-1.21.8:2.0.0+snapshot.603"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-config-neoforge-1.21.8:2.0.0+snapshot.603"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-network-neoforge-1.21.8:2.0.0+snapshot.603"))
+    jarJar(implementation("dev.anvilcraft.lib:anvillib-wheel-neoforge-1.21.8:2.0.0+snapshot.603"))
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -152,7 +155,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = project.group
-            artifactId = project.archivesBaseName
+            artifactId = base.archivesName.get()
             version = project.version
 
             from components.java
@@ -185,7 +188,7 @@ idea {
 }
 
 lombok {
-    version = "1.18.34"
+    version = "1.18.44"
 }
 
 tasks.named('test') {

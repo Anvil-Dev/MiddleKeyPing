@@ -9,3 +9,12 @@ pluginManagement {
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
+
+
+if (providers.gradleProperty('aleeveAtlasDir').isPresent()) {
+    includeBuild(providers.gradleProperty('aleeveAtlasDir').get()) {
+        dependencySubstitution {
+            substitute module('dev.dubhe.map:aleeve_atlas-neoforge-1.21.8') using project(':')
+        }
+    }
+}
