@@ -21,8 +21,8 @@
   "middle_key_ping.configuration.max_ping_count": "Max Ping Count",
   "middle_key_ping.configuration.max_ping_distance": "Max Ping Distance",
   "middle_key_ping.configuration.max_ping_distance.tooltip": "The maximum distance allowed for placing pings.",
-  "middle_key_ping.configuration.section.middle_key_ping.client.toml": "Middle Key Ping Client Configuration",
-  "middle_key_ping.configuration.section.middle_key_ping.client.toml.title": "Middle Key Ping Client Configuration",
+  "middle_key_ping.configuration.section.middle.key.ping.client.toml": "Middle Key Ping Client Configuration",
+  "middle_key_ping.configuration.section.middle.key.ping.client.toml.title": "Middle Key Ping Client Configuration",
   "middle_key_ping.configuration.title": "Middle Key Ping Configuration",
   "middle_key_ping.configuration.warning_color": "Warning Color",
   "middle_key_ping.configuration.warning_text_color": "Warning Text Color"

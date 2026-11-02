@@ -4,7 +4,7 @@ import dev.anvilcraft.ping.network.payload.EntityPingPayload;
 import dev.anvilcraft.ping.network.payload.PositionPingPayload;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.UUID;
 
 public record Ping(@Nullable Vec3 position, @Nullable UUID entity, PingType pingType, long endTime) {
